@@ -1,67 +1,71 @@
 {
-  "family": "backend-task-test",
-  "executionRoleArn": "arn:aws:iam::257394465392:role/backend-ecs-execution-role-eu-central-1",
-  "containerDefinitions": [
-    {
-      "logConfiguration": {
-        "logDriver": "awslogs",
-        "options": {
-          "awslogs-group": "/ecs/backend",
-          "awslogs-region": "eu-central-1",
-          "awslogs-stream-prefix": "ecs"
+    "family": "backend-task-test",
+    "executionRoleArn": "arn:aws:iam::257394465392:role/backend-ecs-execution-role-eu-central-1",
+    "containerDefinitions": [
+        {
+            "logConfiguration": {
+                "logDriver": "awslogs",
+                "options": {
+                    "awslogs-group": "/ecs/backend",
+                    "awslogs-region": "eu-central-1",
+                    "awslogs-stream-prefix": "ecs"
+                }
+            },
+            "entryPoint": [
+                "sh",
+                "-c",
+                "/backend/run.sh"
+            ],
+            "workingDirectory": "/backend",
+            "portMappings": [
+                {
+                    "hostPort": 8081,
+                    "protocol": "tcp",
+                    "containerPort": 8081
+                }
+            ],
+            "environment": [
+                {
+                    "name": "HUB",
+                    "value": "EMEA"
+                },
+                {
+                    "name": "INITIAL_START",
+                    "value": "true"
+                },
+                {
+                    "name": "REGION",
+                    "value": "eu-central-1"
+                },
+                {
+                    "name": "STAGE",
+                    "value": "TEST"
+                }
+            ],
+            "secrets": [
+                {
+                    "valueFrom": "arn:aws:secretsmanager:eu-central-1:257394465392:secret:appSecret-KSnxkU",
+                    "name": "SPRING_APPLICATION_JSON"
+                }
+            ],
+            "cpu": 1024,
+            "memory": 2048,
+            "memoryReservation": 1024,
+            "image": "257394465392.dkr.ecr.eu-central-1.amazonaws.com/backend:latest",
+            "dockerLabels": {
+                "PROMETHEUS_EXPORTER_PORT": "8081",
+                "PROMETHEUS_EXPORTER_PATH": "/backend/status/v1/prometheus",
+                "application": "backend",
+                "PROMETHEUS_EXPORTER_JOB_NAME": "backend"
+            },
+            "name": "backend"
         }
-      },
-      "entryPoint": ["sh", "-c", "/backend/run.sh"],
-      "workingDirectory": "/backend",
-      "portMappings": [
-        {
-          "hostPort": 8081,
-          "protocol": "tcp",
-          "containerPort": 8081
-        }
-      ],
-      "environment": [
-        {
-          "name": "HUB",
-          "value": "EMEA"
-        },
-        {
-          "name": "INITIAL_START",
-          "value": "true"
-        },
-        {
-          "name": "REGION",
-          "value": "eu-central-1"
-        },
-        {
-          "name": "STAGE",
-          "value": "TEST"
-        }
-      ],
-      "secrets": [
-        {
-          "valueFrom": "<<TODO: set ARN of secrets manager>>",
-          "name": "SPRING_APPLICATION_JSON"
-        }
-      ],
-      "cpu": 1024,
-      "memory": 2048,
-      "memoryReservation": 1024,
-      "image": "257394465392.dkr.ecr.eu-central-1.amazonaws.com/backend:latest",
-      "dockerLabels": {
-        "PROMETHEUS_EXPORTER_PORT": "8081",
-        "PROMETHEUS_EXPORTER_PATH": "/backend/status/v1/prometheus",
-        "application": "backend",
-        "PROMETHEUS_EXPORTER_JOB_NAME": "backend"
-      },
-      "name": "backend"
-    }
-  ],
-  "taskRoleArn": "arn:aws:iam::257394465392:role/backend-ecs-task-role-eu-central-1",
-  "requiresCompatibilities": [
-    "FARGATE"
-  ],
-  "networkMode": "awsvpc",
-  "memory": "2048",
-  "cpu": "1024"
+    ],
+    "taskRoleArn": "arn:aws:iam::257394465392:role/backend-ecs-task-role-eu-central-1",
+    "requiresCompatibilities": [
+        "FARGATE"
+    ],
+    "networkMode": "awsvpc",
+    "memory": "2048",
+    "cpu": "1024"
 }
