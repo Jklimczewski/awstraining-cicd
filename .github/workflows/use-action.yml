@@ -16,7 +16,7 @@ jobs:
     steps:
       - name: Greet
         id: greet
-        uses: jklimczewski/test-repo-workflows@v1
+        uses: jklimczewski/test-repo-workflows@v2
         with:
           name: ${{ matrix.name }}
       - name: Print action call output
